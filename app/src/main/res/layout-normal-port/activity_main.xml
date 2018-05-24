@@ -54,26 +54,26 @@
         android:id="@+id/editText"
         android:textSize="24sp"
         android:textStyle="normal|bold"
-        android:layout_marginBottom="45dp"
-        android:layout_above="@+id/button"
-        android:layout_alignStart="@+id/textView"
+        android:layout_marginBottom="96dp"
         android:textColorLink="@android:color/transparent"
         android:maxLines="1"
-        android:lines="1"/>
+        android:lines="1"
+        android:layout_above="@+id/button"
+        android:layout_alignStart="@+id/textView" />
 
     <TextView
         android:hint="Pierwszy kod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="64dp"
         android:id="@+id/textView"
-        android:layout_above="@+id/editText"
-        android:layout_centerHorizontal="true"
         android:maxLines="1"
         android:lines="1"
         android:scrollbarAlwaysDrawVerticalTrack="false"
         android:textColorLink="@android:color/background_dark"
         android:textSize="24sp"
-        android:textStyle="normal|bold" />
+        android:textStyle="normal|bold"
+        android:layout_above="@+id/editText"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
