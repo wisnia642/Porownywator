@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static java.security.AccessController.getContext;
@@ -50,12 +51,15 @@ public class MainActivity extends AppCompatActivity {
     public TextView textView;
     public String kod_1,kod_2,kody_sql;
     public Vibrator v;
-    public String dane,data;
+    public String dane,data,data_1;
     public boolean status=false;
     ToneGenerator toneG;
 
     Calendar c = Calendar.getInstance();
-    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
+    Calendar d = Calendar.getInstance();
+    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+    SimpleDateFormat df1 = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+
 
     private static final String SAMPLE_DB_NAME = "Baza";
 
@@ -100,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     public void send_data()
     {
         data = df.format(c.getTime());
+        Log.i("test","2 "+data);
         try {
             SQLiteDatabase sampleDB1 = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
             sampleDB1.execSQL("INSERT INTO kody (data_godz,kody) VALUES ('"+data+"','"+kod_2+"')");
@@ -123,8 +128,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void sprawdzanie()
+    public void delete_data_everyday()
     {
+        d.add(Calendar.DATE,-1);
+        data_1 = df1.format(d.getTime());
+        Log.i("test","dupa  "+data_1);
+
+        try {
+            SQLiteDatabase sampleDB1 = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
+            sampleDB1.execSQL("delete from kody where data_godz<'"+data_1+"' ");
+            sampleDB1.close();
+        } catch (Exception f) {
+            Log.i("test","blad"+f);
+        }
+
+    }
+
+    public void sprawdzanie() {
 
         //function to comare code
         kod_1 = textView.getText().toString();
@@ -132,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
         //   Log.i("test",kod_1+"   "+kod_2);
 
-        if(kod_1.equals("")) {
+        if (kod_1.equals("")) {
 
             if (!kod_2.equals("")) {
 
@@ -140,34 +160,33 @@ public class MainActivity extends AppCompatActivity {
                 editText1.setText("");
             }
 
-        }else if (!kod_2.equals("")){
+        } else if (!kod_2.equals("")) {
 
             //add code to dynamic tab sql
-             send_data();
+
+            get_data();
+
 
             if (kod_1.equals(kod_2)) {
                 //pozytywny odczyt
-               // Log.i("test", "pozytywny odczyt");
+                 Log.i("test", "pozytywny odczyt");
 
+                toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+
+            } else if (kod_2.equals(kody_sql) && !kod_1.equals(kod_2) && !kod_2.equals("")) {
+
+                // the same code
                 //get data from database
-                get_data();
+                Log.i("test", "zapis pozytywny");
+               
+                toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
+                toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
 
-                if(kod_2.equals(kody_sql)) {
+            } else if (!kod_1.equals(kod_2) && !kod_2.equals("")) {
 
-                    // the same code
-                    Log.i("test","Jest");
-                    toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
-                    toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
-                }
-                else{
-                    //not the same code
-                    Log.i("test","nie jest");
-                    toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-                }
-
-            } else {
                 //negatywny odczyt
-               // Log.i("test", "negatywny odczyt");
+
+                 Log.i("test", "negatywny odczyt");
 
                 toneG.startTone(ToneGenerator.TONE_CDMA_EMERGENCY_RINGBACK, 600);
 
@@ -175,21 +194,22 @@ public class MainActivity extends AppCompatActivity {
                 v.vibrate(600);
 
             }
+
             //write data to file
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
             data = df.format(c.getTime());
-            dane = String.valueOf(data)+"   /   "+kod_1 +"    /   "+ kod_2;
+            dane = String.valueOf(data) + "   /   " + kod_1 + "    /   " + kod_2;
             writeToFile(dane);
 
             //clean column
             textView.setText(kod_2);
             editText1.setText("");
 
+            send_data();
 
         }
-
     }
+
+
 
 
     //class to save data in file
@@ -201,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
       //  if(path.exists()){
 
             try {
-
+                Log.i("test", dane);
                 File file = new File(path, "logi.txt");
 
                 FileOutputStream fileOutputStream = new FileOutputStream(file,true);
@@ -209,9 +229,9 @@ public class MainActivity extends AppCompatActivity {
                 OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
 
                 outputStreamWriter.append(dane +"\n");
-              //  outputStreamWriter.close();
+                outputStreamWriter.close();
 
-             //   Log.i("test", "Data Saved");
+              //  Log.i("test", "Data Saved");
             } catch (Exception e) {
                 Log.e("test", "Could not write file " + e.getMessage());
             }
@@ -255,9 +275,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //crate table if not exist
-        ToDataBaseSqllight();
-
         //definicja layout
         button1 = (Button) findViewById(R.id.button);
         button2 = (Button) findViewById(R.id.button2);
@@ -274,6 +291,11 @@ public class MainActivity extends AppCompatActivity {
         //sound
         toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 
+        //crate table if not exist
+        ToDataBaseSqllight();
+
+        //delete yesterday records
+        delete_data_everyday();
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
