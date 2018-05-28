@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase sampleDB = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
 
         try {
+
             Cursor c = sampleDB.rawQuery("select * from kody where kody = '"+kod_2+"' ", null);
 
             while (c.moveToNext()) {
@@ -106,8 +107,11 @@ public class MainActivity extends AppCompatActivity {
         data = df.format(c.getTime());
         Log.i("test","2 "+data);
         try {
+
+
+
             SQLiteDatabase sampleDB1 = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
-            sampleDB1.execSQL("INSERT INTO kody (data_godz,kody) VALUES ('"+data+"','"+kod_2+"')");
+            sampleDB1.execSQL(" insert into kody (data_godz , kody) select  '"+data+"', '"+kod_2+"' from kody where not EXISTS (select  kody from kody where kody='"+kod_2+"') limit 1");
             sampleDB1.close();
         } catch (Exception f) {
             Log.i("test","blad"+f);
@@ -178,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
                 // the same code
                 //get data from database
                 Log.i("test", "zapis pozytywny");
-               
+
                 toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
                 toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
 
