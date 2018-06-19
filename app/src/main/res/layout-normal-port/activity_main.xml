@@ -24,18 +24,7 @@
         android:maxLines="1"/>
 
     <Button
-        android:text="Czyść"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="71dp"
-        android:id="@+id/button"
-        android:textSize="16sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="36dp" />
-
-    <Button
-        android:text="Sprawdź"
+        android:text="ellenőrzé"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button2"
@@ -45,24 +34,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="21dp" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Drugi kod"
-        android:ems="10"
-        android:id="@+id/editText"
-        android:textSize="24sp"
-        android:textStyle="normal|bold"
-        android:layout_marginBottom="96dp"
-        android:textColorLink="@android:color/transparent"
-        android:maxLines="1"
-        android:lines="1"
-        android:layout_above="@+id/button"
-        android:layout_alignStart="@+id/textView" />
-
     <TextView
-        android:hint="Pierwszy kod"
+        android:hint="első kód"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
@@ -75,5 +48,33 @@
         android:textStyle="normal|bold"
         android:layout_above="@+id/editText"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="törlés"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="45dp"
+        android:id="@+id/button"
+        android:textSize="16sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="második kód"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:textSize="24sp"
+        android:textStyle="normal|bold"
+        android:layout_marginBottom="64dp"
+        android:textColorLink="@android:color/transparent"
+        android:maxLines="1"
+        android:lines="1"
+        android:layout_above="@+id/button2"
+        android:layout_alignStart="@+id/textView"
+        android:layout_alignEnd="@+id/textView" />
 
 </RelativeLayout>

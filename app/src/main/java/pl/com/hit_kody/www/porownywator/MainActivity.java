@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             SQLiteDatabase sampleDB = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
             sampleDB.execSQL("CREATE TABLE IF NOT EXISTS kody (id VARCHAR,data_godz VARCHAR,kody VARCHAR);");
-            Log.i("test","good read");
+          //  Log.i("test","good read");
         } catch (Exception e) {
             Log.i("test","Error database"+e);
         }
@@ -91,8 +91,10 @@ public class MainActivity extends AppCompatActivity {
 
             while (c.moveToNext()) {
                 String zm = String.valueOf(c.getString(1));
+               // Log.i("test","ktyr "+kody_sql+"  "+zm);
                 if (zm != null) {
                     kody_sql = String.valueOf(c.getString(2));
+                 //   Log.i("test","d "+kody_sql+"  "+zm);
                 }
             }
             sampleDB.close();
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             SQLiteDatabase sampleDB1 = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
-            sampleDB1.execSQL(" insert into kody (data_godz , kody) select  '"+data+"', '"+kod_2+"' from kody where not EXISTS (select  kody from kody where kody='"+kod_2+"') limit 1");
+            sampleDB1.execSQL(" insert into kody (data_godz , kody) select  '"+data+"', '"+kod_2+"' where not EXISTS (select kody from kody where kody='"+kod_2+"') limit 1");
             sampleDB1.close();
         } catch (Exception f) {
             Log.i("test","blad"+f);
@@ -129,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception f) {
             Log.i("test","blad"+f);
         }
-
+        writeToFile("Usunięto wszystkie rokordy z tabeli Logi: "+data);
     }
 
     public void delete_data_everyday()
@@ -140,12 +142,12 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             SQLiteDatabase sampleDB1 = this.openOrCreateDatabase(SAMPLE_DB_NAME, MODE_PRIVATE, null);
-            sampleDB1.execSQL("delete from kody where data_godz<'"+data_1+"' ");
+            sampleDB1.execSQL("delete from kody where data_godz<='"+data_1+"' ");
             sampleDB1.close();
         } catch (Exception f) {
             Log.i("test","blad"+f);
         }
-
+        writeToFile("Usunięto  rokordy z tabeli Logi do dnia: "+data_1);
     }
 
     public void sprawdzanie() {
@@ -167,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
         } else if (!kod_2.equals("")) {
 
             //add code to dynamic tab sql
-
             get_data();
 
 
@@ -177,16 +178,16 @@ public class MainActivity extends AppCompatActivity {
 
                 toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
 
-            } else if (kod_2.equals(kody_sql) && !kod_1.equals(kod_2) && !kod_2.equals("")) {
+            } else if (kod_2.equals(kody_sql) && !kod_1.equals(kod_2)) {
 
                 // the same code
                 //get data from database
-                Log.i("test", "zapis pozytywny");
+                Log.i("test", "zapis z bazy");
 
-                toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
-                toneG.startTone(ToneGenerator.TONE_CDMA_CONFIRM, 200);
+                toneG.startTone(ToneGenerator.TONE_PROP_BEEP2, 400);
 
-            } else if (!kod_1.equals(kod_2) && !kod_2.equals("")) {
+
+            } else if (!kod_1.equals(kod_2) ) {
 
                 //negatywny odczyt
 
@@ -203,17 +204,15 @@ public class MainActivity extends AppCompatActivity {
             data = df.format(c.getTime());
             dane = String.valueOf(data) + "   /   " + kod_1 + "    /   " + kod_2;
             writeToFile(dane);
+            send_data();
 
             //clean column
             textView.setText(kod_2);
             editText1.setText("");
 
-            send_data();
 
         }
     }
-
-
 
 
     //class to save data in file
@@ -314,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText("");
                 editText1.setText("");
 
-                showToast("Baza została wyczyszczona");
+                //showToast("Baza została wyczyszczona");
             }
         });
 
